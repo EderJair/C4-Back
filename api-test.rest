@@ -1,0 +1,277 @@
+### API Testing File for C4 Construction - COMPLETE WITH JWT AUTH
+
+# Base URL
+@baseUrl = http://localhost:3001/api
+
+# Variables para tokens JWT (se actualizarán después del login)
+@accessToken = YOUR_ACCESS_TOKEN_HERE
+@refreshToken = YOUR_REFRESH_TOKEN_HERE
+
+### ===== HELLO WORLD =====
+
+### App Welcome Message
+GET {{baseUrl}}
+
+### 🔐 PASO 1: LOGIN COMO ADMIN - Obtener tokens JWT
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@construccion.com",
+  "password": "admin123"
+}
+
+### 🔐 PASO 2: CREAR UN INGENIERO (Solo Admin puede hacerlo)
+# Copia el accessToken del login anterior y reemplaza YOUR_ACCESS_TOKEN_HERE
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "firstName": "Juan Carlos",
+  "lastName": "Pérez Rodríguez", 
+  "email": "ingeniero@construccion.com",
+  "password": "ingeniero123",
+  "role": "ingeniero",
+  "phone": "+57 300 123 4567",
+  "dni": "12345678",
+  "address": "Calle 123 #45-67, Bogotá"
+}
+
+### 🔐 PASO 3: LOGIN COMO INGENIERO - Probar las credenciales creadas
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "ingeniero@construccion.com",
+  "password": "ingeniero123"
+}
+
+### 🔐 PASO 4: OBTENER PERFIL - Usando token JWT
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{accessToken}}
+
+### 🔐 PASO 5: INTENTAR CREAR USUARIO COMO INGENIERO (Debería fallar)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "firstName": "Pedro",
+  "lastName": "García",
+  "email": "trabajador@construccion.com",
+  "password": "trabajador123",
+  "role": "trabajador",
+  "phone": "+57 300 999 8888",
+  "dni": "99999999",
+  "address": "Calle 999 #88-77, Medellín"
+}
+
+### 🔐 PASO 6: REFRESH TOKEN - Renovar el access token
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 🔐 PASO 7: LOGOUT - Cerrar sesión
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{accessToken}}
+
+### ===== PRUEBAS SIN AUTENTICACIÓN (Para comparar) =====
+
+### ❌ INTENTAR ACCEDER A PERFIL SIN TOKEN (Debería fallar)
+GET {{baseUrl}}/auth/profile
+
+### ❌ INTENTAR CREAR USUARIO SIN TOKEN (Debería fallar)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Sin",
+  "lastName": "Permiso",
+  "email": "sin@permiso.com",
+  "password": "123456",
+  "role": "trabajador"
+}
+
+### ===== CREAR USUARIOS (MÉTODO DIRECTO - SIN JWT) =====
+
+### Crear un Ingeniero (Método directo sin autenticación)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Juan Carlos",
+  "lastName": "Pérez Rodríguez",
+  "email": "jperez@construccion.com",
+  "password": "ingeniero123",
+  "role": "ingeniero",
+  "phone": "+57 300 123 4567",
+  "dni": "12345678",
+  "address": "Calle 123 #45-67, Bogotá"
+}
+
+### Crear un Admin
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "firstName": "María Elena",
+  "lastName": "González Castro",
+  "email": "mgonzalez@construccion.com",
+  "password": "admin123",
+  "role": "admin",
+  "phone": "+57 301 234 5678",
+  "dni": "87654321",
+  "address": "Carrera 15 #23-45, Medellín",
+  "companyName": "Construcciones González S.A.S"
+}
+
+### Crear un Trabajador
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Carlos",
+  "lastName": "Martínez López",
+  "email": "cmartinez@construccion.com",
+  "password": "trabajador123",
+  "role": "trabajador",
+  "phone": "+57 302 345 6789",
+  "dni": "45678912",
+  "address": "Calle 67 #89-12, Cali"
+}
+
+### Crear un Conductor
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Roberto",
+  "lastName": "Silva Herrera",
+  "email": "rsilva@construccion.com",
+  "password": "conductor123",
+  "role": "conductor",
+  "phone": "+57 303 456 7890",
+  "dni": "78912345",
+  "address": "Avenida 34 #56-78, Barranquilla"
+}
+
+### ===== CONSULTAR USUARIOS =====
+
+### Obtener todos los usuarios
+GET {{baseUrl}}/users
+
+### Obtener usuario por ID
+GET {{baseUrl}}/users/1
+
+### Obtener ingenieros
+GET {{baseUrl}}/users/role/ingeniero
+
+### Obtener administradores
+GET {{baseUrl}}/users/role/admin
+
+### Obtener trabajadores
+GET {{baseUrl}}/users/role/trabajador
+
+### Obtener conductores
+GET {{baseUrl}}/users/role/conductor
+
+### ===== CREAR PROYECTOS =====
+
+### Crear un Proyecto
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{
+  "name": "Edificio Residential Plaza",
+  "description": "Construcción de edificio residencial de 15 pisos con 60 apartamentos",
+  "address": "Carrera 7 #45-123, Bogotá",
+  "clientName": "Inmobiliaria Capital",
+  "clientPhone": "+57 601 234 5678",
+  "clientEmail": "contacto@inmobiliariacapital.com",
+  "status": "planificado",
+  "startDate": "2025-08-01",
+  "estimatedEndDate": "2026-08-01",
+  "totalBudget": 5000000000,
+  "notes": "Proyecto prioritario para el Q3 2025",
+  "assignedEngineerId": 1,
+  "createdById": 1
+}
+
+### ===== CONSULTAR PROYECTOS =====
+
+### Obtener todos los proyectos
+GET {{baseUrl}}/projects
+
+### Obtener proyecto por ID
+GET {{baseUrl}}/projects/1
+
+### Obtener proyectos por estado
+GET {{baseUrl}}/projects/status/planificado
+
+### Obtener proyectos de un ingeniero
+GET {{baseUrl}}/projects/engineer/1
+
+### ===== CREAR FASES =====
+
+### Crear fases estándar para un proyecto
+POST {{baseUrl}}/project-phases/project/1/standard
+
+### Crear fase personalizada
+POST {{baseUrl}}/project-phases
+Content-Type: application/json
+
+{
+  "type": "excavacion",
+  "name": "Excavación Principal",
+  "description": "Excavación para cimientos del edificio",
+  "projectId": 1,
+  "estimatedCost": 150000000,
+  "requiredEquipment": "Excavadora, volquetas, compactador",
+  "requiredMaterials": "Combustible, herramientas"
+}
+
+### ===== CONSULTAR FASES =====
+
+### Obtener todas las fases
+GET {{baseUrl}}/project-phases
+
+### Obtener fases de un proyecto
+GET {{baseUrl}}/project-phases/project/1
+
+### Obtener fases por tipo
+GET {{baseUrl}}/project-phases/type/excavacion
+
+### ===== CREAR DATOS DE EXCAVACIÓN =====
+
+### Crear datos de excavación
+POST {{baseUrl}}/excavation
+Content-Type: application/json
+
+{
+  "projectPhaseId": 1,
+  "excavationDepth": 3.5,
+  "excavationArea": 500.0,
+  "excavationVolume": 1750.0,
+  "soilType": "clay",
+  "equipment": ["Excavadora CAT 320", "Volqueta 10m3", "Compactador"],
+  "laborHours": 120.0,
+  "materialCost": 5000000,
+  "equipmentCost": 8000000,
+  "laborCost": 6000000,
+  "notes": "Excavación completada según especificaciones técnicas",
+  "startDate": "2025-07-15",
+  "endDate": "2025-07-20",
+  "status": "completed"
+}
+
+### ===== CONSULTAR EXCAVACIÓN =====
+
+### Obtener datos de excavación por fase
+GET {{baseUrl}}/excavation/project-phase/1
+
+### Obtener costos de excavación por fase
+GET {{baseUrl}}/excavation/costs/project-phase/1

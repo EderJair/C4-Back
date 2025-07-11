@@ -1,33 +1,88 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# C4 Construction Management API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Sistema de gestión de proyectos de construcción desarrollado con NestJS y PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🏗️ Arquitectura del Proyecto
 
-## Description
+```
+src/
+├── app.module.ts              # Módulo principal de la aplicación
+├── main.ts                    # Punto de entrada de la aplicación
+├── common/                    # Utilidades compartidas
+│   ├── decorators/           # Decoradores personalizados
+│   ├── guards/               # Guards de autenticación/autorización
+│   ├── interceptors/         # Interceptores para transformar respuestas
+│   ├── pipes/                # Pipes de validación
+│   └── filters/              # Filtros de excepción
+├── config/                   # Configuración de la aplicación
+│   ├── database.config.ts    # Configuración de base de datos
+│   ├── app.config.ts         # Configuración general
+│   └── validation.schema.ts  # Esquema de validación de variables de entorno
+├── shared/                   # Recursos compartidos
+│   ├── entities/             # Entidades de TypeORM
+│   │   ├── user.entity.ts
+│   │   ├── project.entity.ts
+│   │   ├── project-phase.entity.ts
+│   │   └── excavation-data.entity.ts
+│   └── interfaces/           # Interfaces compartidas
+├── modules/                  # Módulos de negocio
+│   ├── users/               # Gestión de usuarios
+│   ├── projects/            # Gestión de proyectos
+│   ├── project-phases/      # Gestión de fases de proyecto
+│   └── excavation/          # Datos específicos de excavación
+└── database/                # Base de datos
+    ├── migrations/          # Migraciones
+    └── seeds/              # Datos de prueba
+```
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Características
 
-## Project setup
+- **Gestión de Usuarios**: CRUD completo con roles (Admin, Ingeniero, Trabajador, Conductor)
+- **Gestión de Proyectos**: Control completo de proyectos de construcción
+- **Fases de Proyecto**: Manejo de diferentes tipos de fases (Excavación, Demolición, Construcción, Acabados)
+- **Datos de Excavación**: Registro detallado de métricas y costos de excavación
+- **Validación Global**: Validación automática de datos de entrada
+- **Manejo de Errores**: Respuestas de error consistentes
+- **Configuración Centralizada**: Variables de entorno validadas
 
+## 📋 Prerrequisitos
+
+- Node.js >= 18
+- PostgreSQL >= 12
+- npm o yarn
+
+## 🔧 Instalación
+
+1. Clonar el repositorio
 ```bash
+git clone <repository-url>
+cd c4-app-backend-001
+```
+
+2. Instalar dependencias
+```bash
+npm install
+```
+
+3. Configurar variables de entorno
+```bash
+cp .env.example .env
+```
+
+4. Editar el archivo `.env` con tus configuraciones:
+```bash
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=tu_password
+DB_DATABASE=c4_construction
+```
+
+5. Ejecutar en modo desarrollo
+```bash
+npm run start:dev
+```
 $ npm install
 ```
 
