@@ -2,6 +2,8 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserRole } from '../../shared/entities';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -31,16 +33,18 @@ export class UsersController {
 
   @Post()
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admin puede crear usuarios (este endpoint ahora está deprecated, usar auth/register)
-  create(@Body() userData: Partial<User>): Promise<User> {
-    return this.usersService.create(userData);
+  @Roles(UserRole.ADMIN) // Solo admin puede crear usuarios
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    // DEPRECATED: Usar auth/register en su lugar
+    // Este endpoint ahora también hashea contraseñas
+    return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  update(@Param('id') id: number, @Body() updateData: Partial<User>): Promise<User | null> {
-    return this.usersService.update(id, updateData);
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User | null> {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')

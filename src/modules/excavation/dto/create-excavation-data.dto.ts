@@ -1,5 +1,5 @@
+
 import { IsNumber, IsOptional, IsEnum, IsArray, IsString, IsDateString, IsPositive } from 'class-validator';
-import { PhaseStatus } from '../../../shared/entities';
 
 export class CreateExcavationDataDto {
   @IsNumber()

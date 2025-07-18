@@ -108,7 +108,7 @@ export class AuthService {
       throw new UnauthorizedException('Token de actualización inválido');
     }
   }
-
+  
   async getProfile(userId: number) {
     const user = await this.usersService.findOne(userId);
     if (!user) {

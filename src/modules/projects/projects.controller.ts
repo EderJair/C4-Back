@@ -2,6 +2,8 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Project, ProjectStatus } from '../../shared/entities';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -33,16 +35,16 @@ export class ProjectsController {
   }
 
   @Post()
-  create(@Body() projectData: Partial<Project>): Promise<Project> {
-    return this.projectsService.create(projectData);
+  create(@Body() createProjectDto: CreateProjectDto): Promise<Project> {
+    return this.projectsService.create(createProjectDto);
   }
 
   @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateData: Partial<Project>,
+    @Body() updateProjectDto: UpdateProjectDto,
   ): Promise<Project | null> {
-    return this.projectsService.update(id, updateData);
+    return this.projectsService.update(id, updateProjectDto);
   }
 
   @Put(':id/assign-engineer/:engineerId')

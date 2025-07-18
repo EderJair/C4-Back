@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ProjectPhase } from './project-phase.entity';
+import { Ring } from './ring.entity';
 
 @Entity('excavation_data')
 export class ExcavationData {
@@ -55,6 +56,13 @@ export class ExcavationData {
 
   @Column({ type: 'enum', enum: ['pending', 'in_progress', 'completed', 'paused'], default: 'pending' })
   status: 'pending' | 'in_progress' | 'completed' | 'paused';
+
+  // Relación con Rings
+  @OneToMany(() => Ring, ring => ring.excavationData, {
+    cascade: true,
+    eager: false
+  })
+  rings: Ring[];
 
   @CreateDateColumn()
   createdAt: Date;

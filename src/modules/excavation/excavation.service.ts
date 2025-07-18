@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ExcavationData, ProjectPhase, PhaseType } from '../../shared/entities';
+import { ExcavationData, ProjectPhase } from '../../shared/entities';
 import { CreateExcavationDataDto } from './dto/create-excavation-data.dto';
 
 @Injectable()
@@ -14,17 +14,29 @@ export class ExcavationService {
   ) {}
 
   async create(createExcavationDataDto: CreateExcavationDataDto): Promise<ExcavationData> {
-    // Verificar que la fase del proyecto existe y es de tipo excavación
+    // Verificar que la fase del proyecto existe
     const projectPhase = await this.projectPhaseRepository.findOne({
-      where: { id: createExcavationDataDto.projectPhaseId, type: PhaseType.EXCAVACION }
+      where: { id: createExcavationDataDto.projectPhaseId }
     });
 
     if (!projectPhase) {
-      throw new NotFoundException('Fase de excavación no encontrada');
+      throw new NotFoundException('Fase del proyecto no encontrada');
     }
 
     const excavationData = this.excavationRepository.create(createExcavationDataDto);
     return await this.excavationRepository.save(excavationData);
+  }
+
+  async findByProject(projectId: number): Promise<ExcavationData[]> {
+    return await this.excavationRepository.find({
+      where: { 
+        projectPhase: { 
+          projectId: projectId
+        } 
+      },
+      relations: ['projectPhase', 'projectPhase.project'],
+      order: { createdAt: 'DESC' }
+    });
   }
 
   async findByProjectPhase(projectPhaseId: number): Promise<ExcavationData[]> {
@@ -57,6 +69,14 @@ export class ExcavationService {
   async remove(id: number): Promise<void> {
     const excavationData = await this.findOne(id);
     await this.excavationRepository.remove(excavationData);
+  }
+
+  // Calcular costos totales por proyecto
+  async calculateTotalCostByProject(projectId: number): Promise<number> {
+    const excavationData = await this.findByProject(projectId);
+    return excavationData.reduce((total, data) => {
+      return total + (data.materialCost || 0) + (data.equipmentCost || 0) + (data.laborCost || 0);
+    }, 0);
   }
 
   // Calcular costos totales

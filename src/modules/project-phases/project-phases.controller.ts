@@ -1,7 +1,9 @@
-// src/project-phases/project-phases.controller.ts
+// src/modules/project-phases/project-phases.controller.ts
 import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe } from '@nestjs/common';
 import { ProjectPhasesService } from './project-phases.service';
 import { ProjectPhase, PhaseType, PhaseStatus } from '../../shared/entities';
+import { CreateProjectPhaseDto } from './dto/create-project-phase.dto';
+import { UpdateProjectPhaseDto } from './dto/update-project-phase.dto';
 
 @Controller('project-phases')
 export class ProjectPhasesController {
@@ -33,8 +35,8 @@ export class ProjectPhasesController {
   }
 
   @Post()
-  create(@Body() phaseData: Partial<ProjectPhase>): Promise<ProjectPhase> {
-    return this.phasesService.create(phaseData);
+  create(@Body() createProjectPhaseDto: CreateProjectPhaseDto): Promise<ProjectPhase> {
+    return this.phasesService.create(createProjectPhaseDto);
   }
 
   @Post('project/:projectId/standard')
@@ -45,9 +47,9 @@ export class ProjectPhasesController {
   @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateData: Partial<ProjectPhase>,
+    @Body() updateProjectPhaseDto: UpdateProjectPhaseDto,
   ): Promise<ProjectPhase | null> {
-    return this.phasesService.update(id, updateData);
+    return this.phasesService.update(id, updateProjectPhaseDto);
   }
 
   @Put(':id/status/:status')

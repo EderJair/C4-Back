@@ -11,6 +11,9 @@ import { ExcavationModule } from './modules/excavation/excavation.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { getDatabaseConfig } from './config/database.config';
 // import { validationSchema } from './config/validation.schema';
+import { RingsModule } from './modules/rings/rings.module';
+import { SectorsModule } from './modules/sectors/sectors.module';
+import { PanelsModule } from './modules/panels/panels.module';
 
 
 
@@ -30,6 +33,9 @@ import { getDatabaseConfig } from './config/database.config';
     ProjectsModule,
     ProjectPhasesModule,
     ExcavationModule,
+    RingsModule,
+    SectorsModule,
+    PanelsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
